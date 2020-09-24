@@ -3,17 +3,20 @@ package handlers
 import (
 	"net/http"
 	"encoding/json"
-        "fmt"
-	"strings"
+	"io/ioutil"
+	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/saggarg1/messageservice/pkg/data"
-	"github.com/saggarg1/messageservice/pkg/utils"
-	"github.com/saggarg1/messageservice/pkg/model"
+	"github.com/sagargarg1/messageservice/pkg/data"
+	"github.com/sagargarg1/messageservice/pkg/utils"
+	"github.com/sagargarg1/messageservice/pkg/model"
 )
 
-type MessagesHandler struct {
-}
+var (
+	HandlerInterface MessageHandlerInterface = &MessagesHandler{}
+)
+
+type MessagesHandler struct {}
 
 type MessageHandlerInterface interface {
 	AddMessage(rw http.ResponseWriter, r *http.Request)
@@ -28,7 +31,7 @@ func (m *MessagesHandler) AddMessage(rw http.ResponseWriter, r *http.Request) {
 	messageBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		rw.WriteHeader(http.StatusBadRequest)
-		utils.ToJSON(&GenericError{Message: "Invalid request body"}, rw)
+		utils.ToJSON(&model.GenericError{Message: "Invalid request body"}, rw)
 		return
 	}
 	defer r.Body.Close()
@@ -36,11 +39,11 @@ func (m *MessagesHandler) AddMessage(rw http.ResponseWriter, r *http.Request) {
 	var message model.Message
 	if err := json.Unmarshal(messageBody, &message); err != nil {
 		rw.WriteHeader(http.StatusBadRequest)
-                utils.ToJSON(&GenericError{Message: "Invalid json body"}, rw)
+                utils.ToJSON(&model.GenericError{Message: "Invalid json body"}, rw)
                 return
 	}
 
-        data.messageDB.AddMessage(message)
+        data.MessageInterface.AddMessage(message)
 }
 
 func (m *MessagesHandler) UpdateMessage(rw http.ResponseWriter, r *http.Request) {
@@ -48,7 +51,7 @@ func (m *MessagesHandler) UpdateMessage(rw http.ResponseWriter, r *http.Request)
 	messageBody, err := ioutil.ReadAll(r.Body)
         if err != nil {
                 rw.WriteHeader(http.StatusBadRequest)
-                utils.ToJSON(&GenericError{Message: "Invalid request body"}, rw)
+                utils.ToJSON(&model.GenericError{Message: "Invalid request body"}, rw)
                 return
         }
         defer r.Body.Close()
@@ -56,29 +59,29 @@ func (m *MessagesHandler) UpdateMessage(rw http.ResponseWriter, r *http.Request)
         var message model.Message
         if err := json.Unmarshal(messageBody, &message); err != nil {
                 rw.WriteHeader(http.StatusBadRequest)
-                utils.ToJSON(&GenericError{Message: "Invalid json body"}, rw)
+                utils.ToJSON(&model.GenericError{Message: "Invalid json body"}, rw)
                 return
         }
 
-        err := data.messageDB.UpdateMessage(message)
-        if err == model.ErrProductNotFound {
+        error := data.MessageInterface.UpdateMessage(message)
+        if error == model.ErrMessageNotFound {
 
                 rw.WriteHeader(http.StatusNotFound)
-                utils.ToJSON(&GenericError{Message: "Message not found in database"}, rw)
+                utils.ToJSON(&model.GenericError{Message: "Message not found in database"}, rw)
                 return
         }
 
-        rw.WriteHeader(http.StatusSuccess)
+        rw.WriteHeader(http.StatusNoContent)
 }
 
 func (m *MessagesHandler) GetAllMessages(rw http.ResponseWriter, r *http.Request) {
 
-        messages, err := data.messageDB.GetAllMessages()
+        messages := data.MessageInterface.GetAllMessages()
 
-        err = data.ToJSON(messages, rw)
+        err := utils.ToJSON(messages, rw)
         if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
-                utils.ToJSON(&GenericError{Message: err.Error()}, rw)
+                utils.ToJSON(&model.GenericError{Message: err.Error()}, rw)
                 return
         }
 }
@@ -87,25 +90,25 @@ func (m *MessagesHandler) GetMessage(rw http.ResponseWriter, r *http.Request) {
 
         id := getProductID(r)
 
-        message, err := data.messageDB.GetMessage(id)
+        message, err := data.MessageInterface.GetMessage(id)
 
         switch err {
         case nil:
 
-        case model.ErrProductNotFound:
+        case model.ErrMessageNotFound:
                 rw.WriteHeader(http.StatusNotFound)
-                utils.ToJSON(&GenericError{Message: err.Error()}, rw)
+                utils.ToJSON(&model.GenericError{Message: err.Error()}, rw)
                 return
         default:
                 rw.WriteHeader(http.StatusInternalServerError)
-                utils.ToJSON(&GenericError{Message: err.Error()}, rw)
+                utils.ToJSON(&model.GenericError{Message: err.Error()}, rw)
                 return
         }
 
         err = utils.ToJSON(message, rw)
         if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
-                utils.ToJSON(&GenericError{Message: err.Error()}, rw)
+                utils.ToJSON(&model.GenericError{Message: err.Error()}, rw)
                 return
         }
 }
@@ -114,23 +117,23 @@ func (m *MessagesHandler) DeleteMessage(rw http.ResponseWriter, r *http.Request)
 
         id := getProductID(r)
 
-        err := data.messageDB.DeleteMessage(id)
-        if err == model.ErrProductNotFound {
+        err := data.MessageInterface.DeleteMessage(id)
+        if err == model.ErrMessageNotFound {
                 rw.WriteHeader(http.StatusNotFound)
-                utils.ToJSON(&GenericError{Message: err.Error()}, rw)
+                utils.ToJSON(&model.GenericError{Message: err.Error()}, rw)
                 return
         }
 
         if err != nil {
                 rw.WriteHeader(http.StatusInternalServerError)
-                utils.ToJSON(&GenericError{Message: err.Error()}, rw)
+                utils.ToJSON(&model.GenericError{Message: err.Error()}, rw)
                 return
         }
 
         rw.WriteHeader(http.StatusNoContent)
 }
 
-func (m *MessagesHandler) getProductID(r *http.Request) int {
+func getProductID(r *http.Request) int {
         // parse the product id from the url
         vars := mux.Vars(r)
 

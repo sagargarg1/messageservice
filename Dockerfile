@@ -1,18 +1,18 @@
-# Sttart from base image 1.13:
-FROM golang:1.13
+# Sttart from base image 1.12.13:
+FROM golang:1.12.13
 
 # Configure the repo url so we can configure our work directory:
 ENV REPO_URL=github.com/saggarg1/messageservice
 
 # Setup out $GOPATH
-ENV GOPATH=/app
+ENV GOPATH=/root/go
 
 ENV APP_PATH=$GOPATH/src/$REPO_URL
 
 
 # Copy the entire source code from the current directory to $WORKPATH
-ENV WORKPATH=$APP_PATH/src
-COPY src $WORKPATH
+ENV WORKPATH=$APP_PATH/pkg
+COPY pkg $WORKPATH
 WORKDIR $WORKPATH
 
 RUN go build -o messageservice .

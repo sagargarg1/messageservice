@@ -1,7 +1,5 @@
-module github.com/saggarg/messageservice
+module github.com/sagargarg1/messageservice
 
 go 1.13
 
-require (
-	github.com/gorilla/mux v1.7.4
-)
+require github.com/gorilla/mux v1.8.0

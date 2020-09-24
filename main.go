@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/saggarg1/messageservice/pkg/handlers"
+	"github.com/sagargarg1/messageservice/pkg/handlers"
 )
 
 var (
@@ -30,9 +30,9 @@ func main() {
 }
 
 func mapUrls() {
-	router.HandleFunc("/messageservice/v1/message", handlers.MessageHandler.AddMessage).Methods(http.MethodPost)
-	router.HandleFunc("/messageservice/v1/message", handlers.MessageHandler.UpdateMessage).Methods(http.MethodPut)
-        router.HandleFunc("/messageservice/v1/message/{messageID}", handlers.MessageHandler.GetMessage).Methods(http.MethodGet)
-        router.HandleFunc("/messageservice/v1/message/{messageID}", handlers.MessageHandler.DeleteMessage).Methods(http.MethodDelete)
-        router.HandleFunc("/messageservice/v1/message/all", handlers.MessageHandler.GetAllMessages).Methods(http.MethodGet)
+	router.HandleFunc("/messageservice/v1/message", handlers.HandlerInterface.AddMessage).Methods(http.MethodPost)
+	router.HandleFunc("/messageservice/v1/message", handlers.HandlerInterface.UpdateMessage).Methods(http.MethodPut)
+        router.HandleFunc("/messageservice/v1/message/{messageID}", handlers.HandlerInterface.GetMessage).Methods(http.MethodGet)
+        router.HandleFunc("/messageservice/v1/message/{messageID}", handlers.HandlerInterface.DeleteMessage).Methods(http.MethodDelete)
+        router.HandleFunc("/messageservice/v1/message/all", handlers.HandlerInterface.GetAllMessages).Methods(http.MethodGet)
 }

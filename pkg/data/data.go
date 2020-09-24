@@ -1,12 +1,14 @@
-package main
+package data
 
 import (
-	"fmt"
-        "github.com/saggarg1/messageservice/pkg/model"
+        "github.com/sagargarg1/messageservice/pkg/model"
 )
 
-type MessagesDB struct {
-}
+var (
+	MessageInterface MessageDBInterface = &MessagesDB{}
+)
+
+type MessagesDB struct {}
 
 type MessageDBInterface interface {
 	UpdateMessage(message model.Message) error
