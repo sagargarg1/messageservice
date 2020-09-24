@@ -7,9 +7,9 @@ import (
 	"strings"
 
 	"github.com/gorilla/mux"
-	"github.com/saggarg/messageservice/pkg/data"
-	"github.com/saggarg/messageservice/pkg/utils"
-	"github.com/saggarg/messageservice/pkg/model"
+	"github.com/saggarg1/messageservice/pkg/data"
+	"github.com/saggarg1/messageservice/pkg/utils"
+	"github.com/saggarg1/messageservice/pkg/model"
 )
 
 type MessagesHandler struct {
