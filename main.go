@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/saggarg/messageservice/pkg/handlers"
+	"github.com/saggarg1/messageservice/pkg/handlers"
 )
 
 var (
