@@ -2,7 +2,7 @@
 FROM golang:1.13
 
 # Configure the repo url so we can configure our work directory:
-ENV REPO_URL=github.com/saggarg/messageservice
+ENV REPO_URL=github.com/saggarg1/messageservice
 
 # Setup out $GOPATH
 ENV GOPATH=/app
