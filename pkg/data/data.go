@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-        "github.com/saggarg/messageservice/pkg/model"
+        "github.com/saggarg1/messageservice/pkg/model"
 )
 
 type MessagesDB struct {
