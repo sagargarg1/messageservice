@@ -32,13 +32,16 @@ func TestGetMessage(t *testing.T) {
         DB := data.NewMessageDB()
         MessageHandler := NewMessageHandler(Logging, DB)
 
-        req := httptest.NewRequest("GET", "/messageservice/v1/message/2", nil)
+        req := httptest.NewRequest("GET", "/messageservice/v1/message/1", nil)
 	req = mux.SetURLVars(req, map[string]string{
-		"id": "2",
+		"id": "1",
 	})
         resp := httptest.NewRecorder()
         MessageHandler.GetMessage(resp, req)
+	message := &model.Message{}
+	_ = json.Unmarshal(resp.Body.Bytes(), &message)
         assert.Equal(t, http.StatusOK, resp.Code)
+	assert.Equal(t, "I love India", message.Text)
 }
 
 func TestAddMessage(t *testing.T) {
@@ -48,14 +51,16 @@ func TestAddMessage(t *testing.T) {
         MessageHandler := NewMessageHandler(Logging, DB)
 
 	message := model.Message{
-		3,
-		"I am sorry",
+		Text: "I am sorry",
 	}
 	body, _ := json.Marshal(message)
         req := httptest.NewRequest("POST", "/messageservice/v1/message", bytes.NewBuffer(body))
         resp := httptest.NewRecorder()
         MessageHandler.AddMessage(resp, req)
+	var id int
+	_ = json.Unmarshal(resp.Body.Bytes(), &id)
         assert.Equal(t, http.StatusOK, resp.Code)
+	assert.Equal(t, 3, id)	
 }
 
 func TestUpdateMessage(t *testing.T) {
