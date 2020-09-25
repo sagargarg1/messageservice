@@ -6,7 +6,7 @@ import (
 
 // ErrMessageNotFound is an error raised when a message can not be found in the database
 var (
-	ErrMessageNotFound = fmt.Errorf("Product not found")
+	ErrMessageNotFound = fmt.Errorf("Message not found")
 )
 
 // Message defines the structure for an API message
@@ -18,4 +18,12 @@ type Message struct {
 // GenericError is a generic error message returned by a server
 type GenericError struct {
         Message string `json:"message"`
+}
+
+var Metrics map[string]int = map[string]int{
+	"Number":                   0,
+	"BirthdayMessages":         0,
+	"ConfigRequestReceived":    0,
+	"GoodMorningMessages":      0,
+	"PalindromeMessages":       0,
 }

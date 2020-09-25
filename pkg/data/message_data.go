@@ -4,21 +4,22 @@ import (
         "github.com/sagargarg1/messageservice/pkg/model"
 )
 
-var (
-	MessageInterface MessageDBInterface = &MessagesDB{}
-)
-
-type MessagesDB struct {}
-
 type MessageDBInterface interface {
-	UpdateMessage(message model.Message) error
-	GetAllMessages() []*model.Message
-	GetMessage(id int) (*model.Message, error)
-	AddMessage(message model.Message)
-	DeleteMessage(id int) error
+        UpdateMessage(message model.Message) error
+        GetAllMessages() []*model.Message
+        GetMessage(id int) (*model.Message, error)
+        AddMessage(message model.Message) int
+        DeleteMessage(id int) error
 }
 
-func (m *MessagesDB) UpdateMessage(message model.Message) error {
+type MessageDB struct {}
+
+func NewMessageDB () MessageDBInterface {
+	return &MessageDB{}
+}
+
+//Function to update DB
+func (m *MessageDB) UpdateMessage(message model.Message) error {
 	i := findIndexByMessageID(message.ID)
 	if i == -1 {
 		return model.ErrMessageNotFound
@@ -29,12 +30,14 @@ func (m *MessagesDB) UpdateMessage(message model.Message) error {
 	return nil
 }
 
-func (m *MessagesDB) GetAllMessages() []*model.Message {
+//Function to get all messages from DB
+func (m *MessageDB) GetAllMessages() []*model.Message {
 
 	return messageList
 }
 
-func (m *MessagesDB) GetMessage(id int) (*model.Message, error) {
+//Function to get a message with a particular ID
+func (m *MessageDB) GetMessage(id int) (*model.Message, error) {
 	i := findIndexByMessageID(id)
 	if i == -1 {
 		return nil, model.ErrMessageNotFound
@@ -44,13 +47,16 @@ func (m *MessagesDB) GetMessage(id int) (*model.Message, error) {
 	return &message, nil
 }
 
-func (m *MessagesDB) AddMessage(message model.Message) {
+//Function to add message and return the index
+func (m *MessageDB) AddMessage(message model.Message) int {
 	maxID := messageList[len(messageList)-1].ID
 	message.ID = maxID + 1
 	messageList = append(messageList, &message)
+	return message.ID
 }
 
-func (p *MessagesDB) DeleteMessage(id int) error {
+//Function to delete message with a given ID
+func (p *MessageDB) DeleteMessage(id int) error {
 	i := findIndexByMessageID(id)
 	if i == -1 {
 		return model.ErrMessageNotFound
