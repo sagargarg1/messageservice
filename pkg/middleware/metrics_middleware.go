@@ -24,6 +24,7 @@ func MetricsMiddleware(Logging hclog.Logger) func(http.Handler) http.Handler {
                 		return
                 	}
 
+			//Only have handling for post but could be extended for delete and update
 			if r.Method == http.MethodPost {
 				Logging.Debug("Adding metrics \n")
 				text := message.Text
@@ -36,6 +37,8 @@ func MetricsMiddleware(Logging hclog.Logger) func(http.Handler) http.Handler {
 	}
 }
 
+//Function to add metrics
+//TODO add functionality of delete and update to refresh the metrics
 func AddMetrics(text string, Logging hclog.Logger) {
 
 	str := strings.ToLower(text)

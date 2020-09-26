@@ -26,7 +26,6 @@ func main() {
 		Handler:      router,
 	}
 
-	//logger.Info("about to start the application...")
 	if err := srv.ListenAndServe(); err != nil {
 		panic(err)
 	}

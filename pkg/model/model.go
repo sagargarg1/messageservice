@@ -12,7 +12,7 @@ var (
 // Message defines the structure for an API message
 type Message struct {
         ID int `json:"id"`
-        Text string `json:"name" validate:"required"`
+        Text string `json:"message" validate:"required"`
 }
 
 // GenericError is a generic error message returned by a server
@@ -23,7 +23,7 @@ type GenericError struct {
 var Metrics map[string]int = map[string]int{
 	"Number":                   0,
 	"BirthdayMessages":         0,
-	"ConfigRequestReceived":    0,
+	"SorryMessages":            0,
 	"GoodMorningMessages":      0,
 	"PalindromeMessages":       0,
 }
