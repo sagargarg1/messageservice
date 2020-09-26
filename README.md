@@ -92,6 +92,9 @@ Code Structure:
     3.Repeat above steps
     
     Using AKS:
-      1. Create a POD definition
-      2. Cretae a replica set for this POD
-      3. Crete a node port service
+      1. Create an application image with a tag and upload to docker hub
+      2. Create a POD definition with the image with some label
+      3. Cretae a replica set / deployement for this POD match it with pod with the selector
+      4. Crete a node port service match it with pod with the selector
+      5. Publish the IP and Port of this service
+      
