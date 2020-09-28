@@ -39,7 +39,7 @@ func setRoutes() {
 	MetricHandler := handlers.NewMetricsHandler(Logging)
 
 	v1 := router.PathPrefix("/messageservice/v1/message").Subrouter()
-	router.Use(middleware.MetricsMiddleware(Logging))
+	v1.Use(middleware.MetricsMiddleware(Logging))
 	
 	MessageHandler.AddRoutes(v1)
 	MetricHandler.AddRoutes(v1)
